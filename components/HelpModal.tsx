@@ -4,9 +4,10 @@ import { X, MousePointer2, Hammer, Hand, Move, Keyboard, Settings, Info, Heart, 
 
 interface HelpModalProps {
   onClose: () => void;
+  onGoToFood4Thought?: () => void;
 }
 
-export const HelpModal: React.FC<HelpModalProps> = ({ onClose }) => {
+export const HelpModal: React.FC<HelpModalProps> = ({ onClose, onGoToFood4Thought }) => {
   const [activeTab, setActiveTab] = useState<'WELCOME' | 'CONTROLS' | 'TOOLS' | 'VISION' | 'GAMIFICATION' | 'SYSTEM'>('WELCOME');
 
   return (
@@ -156,6 +157,21 @@ export const HelpModal: React.FC<HelpModalProps> = ({ onClose }) => {
                             <p className="text-sm text-gray-600">No tools. No glue. No screws. It's like a life-sized logic puzzle that anyone can build.</p>
                         </div>
                     </div>
+
+                    {onGoToFood4Thought && (
+                        <div className="mt-8 bg-indigo-50 border border-indigo-100 p-6 rounded-xl flex items-center justify-between">
+                            <div>
+                                <h4 className="font-bold text-indigo-900 mb-1">Food for Thought</h4>
+                                <p className="text-sm text-indigo-700">Read our articles on positive gamification, technology for good, and sustainable architecture.</p>
+                            </div>
+                            <button 
+                                onClick={onGoToFood4Thought}
+                                className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg shrink-0 transition-colors"
+                            >
+                                Read Articles
+                            </button>
+                        </div>
+                    )}
                 </div>
             )}
 

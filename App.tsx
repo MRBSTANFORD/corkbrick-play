@@ -10,6 +10,8 @@ import { BOMModal } from './components/BOMModal';
 import { ImportWizard } from './components/ImportWizard';
 import { exportBlocksToOBJ } from './services/importer';
 import { HelpModal } from './components/HelpModal';
+import { LandingPage } from './components/LandingPage';
+import { Food4Thought } from './components/Food4Thought';
 import { SubmitModal } from './components/SubmitModal';
 import { ChallengeModal, ChallengeHUD } from './components/ChallengeSystem';
 import { ShareModal } from './components/ShareModal';
@@ -200,7 +202,7 @@ const SelectionInspector: React.FC<{
     );
 }
 
-const App: React.FC = () => {
+const CorkbrickApp: React.FC<{ initialShowFood4Thought: () => void }> = ({ initialShowFood4Thought }) => {
   const [history, setHistory] = useState<PlacedBrock[][]>([[]]);
   const [historyIndex, setHistoryIndex] = useState(0);
   const blocks = useMemo(() => history[historyIndex] || [], [history, historyIndex]);
@@ -844,7 +846,7 @@ const App: React.FC = () => {
   return (
     <div 
         ref={mainContainerRef} 
-        className={`h-screen w-screen flex flex-col font-sans text-gray-800 outline-none select-none ${isShiftDown && mode === 'EDIT' ? 'cursor-crosshair' : (mode === 'MEASURE' ? 'cursor-none' : '')}`}
+        className={`h-screen w-screen flex flex-col font-sans text-gray-800 outline-none select-none overflow-hidden ${isShiftDown && mode === 'EDIT' ? 'cursor-crosshair' : (mode === 'MEASURE' ? 'cursor-none' : '')}`}
         tabIndex={0} 
         onKeyDown={handleKeyDown}
         onKeyUp={handleKeyUp}
@@ -853,7 +855,7 @@ const App: React.FC = () => {
         onPointerUp={handlePointerUp}
     >
       <input type="file" ref={fileInputRef} onChange={handleLoadScene} className="hidden" accept=".json"/>
-      {showHelp && <HelpModal onClose={() => setShowHelp(false)} />}
+      {showHelp && <HelpModal onClose={() => setShowHelp(false)} onGoToFood4Thought={() => { setShowHelp(false); initialShowFood4Thought(); }} />}
       {showSubmitModal && <SubmitModal onClose={() => setShowSubmitModal(false)} blocks={blocks} props={placedProps} stats={{totalBlocks: blocks.length, totalCost: stats.totalCost, totalWeight: stats.totalWeight, sdgImpact: stats.totalSDG}} />}
       {showShareModal && <ShareModal imageUrl={shareScreenshotUrl} onClose={() => setShowShareModal(false)} />}
       {showChallenges && <ChallengeModal onClose={() => setShowChallenges(false)} onSelectChallenge={handleSelectChallenge} activeChallengeId={activeChallenge?.id} />}
@@ -1242,4 +1244,44 @@ const App: React.FC = () => {
   );
 };
 
-export default App;
+export default function App() {
+  const [currentView, setCurrentView] = useState<'LANDING' | 'APP' | 'FOOD4THOUGHT'>(() => {
+    if (window.location.pathname.includes('food4thought')) return 'FOOD4THOUGHT';
+    if (window.location.pathname.includes('landing')) return 'LANDING';
+    return 'APP';
+  });
+
+  useEffect(() => {
+    const handlePopState = () => {
+      if (window.location.pathname.includes('food4thought')) setCurrentView('FOOD4THOUGHT');
+      else if (window.location.pathname.includes('landing')) setCurrentView('LANDING');
+      else setCurrentView('APP');
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  const navigateTo = (view: 'LANDING' | 'APP' | 'FOOD4THOUGHT', path: string) => {
+    window.history.pushState({}, '', path);
+    setCurrentView(view);
+  };
+
+  if (currentView === 'FOOD4THOUGHT') {
+    return <Food4Thought onBack={() => navigateTo('APP', '/')} />;
+  }
+
+  if (currentView === 'LANDING') {
+    return (
+      <LandingPage 
+        onStart={() => navigateTo('APP', '/')} 
+        onGoToFood4Thought={() => navigateTo('FOOD4THOUGHT', '/food4thought')} 
+      />
+    );
+  }
+
+  return (
+    <CorkbrickApp 
+      initialShowFood4Thought={() => navigateTo('FOOD4THOUGHT', '/food4thought')} 
+    />
+  );
+}
