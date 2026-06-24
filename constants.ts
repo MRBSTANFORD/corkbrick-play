@@ -4,7 +4,7 @@
  * STATUS: FROZEN
  * VERSION: 1.2.0 - Launch Ready (BYOK & Pro Model)
  */
-import { AppConfig, BrockSpec, BrockType, RoomSize, FloorMaterial, Challenge, PropType, PropSpec, PropCategory } from './types';
+import { AppConfig, BrockSpec, BrockType, RoomSize, FloorMaterial, Challenge, PropType, PropSpec, PropCategory, MaterialDef } from './types';
 
 export const PROP_SPECS: Record<PropType, PropSpec> = {
   // Furniture & Decor
@@ -264,13 +264,13 @@ export const FLOOR_PROPS: Record<FloorMaterial, { name: string, color: string, r
 };
 
 const CORK_COLOR = '#C49A6C';
-export const MATERIAL_COLORS = [
-  { name: 'Cork', color: CORK_COLOR },
-  { name: 'White Marble', color: '#F0F0F0' },
-  { name: 'Black Marble', color: '#1A1A1A' },
-  { name: 'Rose Marble', color: '#E8B4B8' },
-  { name: 'Wood', color: '#8B5A2B' },
-  { name: 'Hemp', color: '#D2B48C' },
+export const MATERIAL_COLORS: MaterialDef[] = [
+  { name: 'Cork', color: CORK_COLOR, carbonFactor: 1.80, carbonPrice: 30.00, density: 152.5, pricePerKg: 9.43 },
+  { name: 'White Marble', color: '#F0F0F0', carbonFactor: 0.45, carbonPrice: 15.00, density: 2700, pricePerKg: 2.00 },
+  { name: 'Black Marble', color: '#1A1A1A', carbonFactor: 0.45, carbonPrice: 15.00, density: 2700, pricePerKg: 2.50 },
+  { name: 'Rose Marble', color: '#E8B4B8', carbonFactor: 0.45, carbonPrice: 15.00, density: 2700, pricePerKg: 2.20 },
+  { name: 'Wood', color: '#8B5A2B', carbonFactor: 1.80, carbonPrice: 20.00, density: 600, pricePerKg: 1.50 },
+  { name: 'Hemp', color: '#D2B48C', carbonFactor: 1.80, carbonPrice: 20.00, density: 300, pricePerKg: 3.00 },
 ];
 
 export const APP_CONFIG: AppConfig = {

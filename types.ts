@@ -153,6 +153,10 @@ export interface Challenge {
 export interface MaterialDef {
   name: string;
   color: string;
+  carbonFactor: number;
+  carbonPrice: number;
+  density: number; // kg/m3
+  pricePerKg: number; // €/kg
 }
 
 export interface AppConfig {

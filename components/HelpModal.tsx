@@ -143,8 +143,11 @@ export const HelpModal: React.FC<HelpModalProps> = ({ onClose, onGoToFood4Though
                     <div className="grid md:grid-cols-3 gap-6">
                         <div className="border p-4 rounded-xl hover:shadow-md transition bg-gray-50">
                             <Leaf className="text-green-600 mb-3" size={32} />
-                            <h4 className="font-bold text-gray-800 mb-2">Sustainable</h4>
-                            <p className="text-sm text-gray-600">Made from cork oak bark—a renewable resource harvested without harming the tree. Carbon negative and eco-friendly.</p>
+                            <h4 className="font-bold text-gray-800 mb-2">Sustainable & Carbon Negative</h4>
+                            <p className="text-sm text-gray-600 mb-2">Made from cork oak bark—a renewable resource harvested without harming the tree. Our material acts as a carbon sink.</p>
+                            <div className="bg-emerald-50 border border-emerald-100 rounded p-2 text-xs text-emerald-800">
+                                <strong>Carbon Credits:</strong> Our natural cork sequesters <strong>1.80 Tons of CO₂</strong> per ton of material produced. At an estimated market baseline of $30.00 per ton, every block you build generates measurable, verifiable carbon credit revenue potential.
+                            </div>
                         </div>
                         <div className="border p-4 rounded-xl hover:shadow-md transition bg-gray-50">
                             <Layers className="text-indigo-600 mb-3" size={32} />
@@ -451,6 +454,21 @@ export const HelpModal: React.FC<HelpModalProps> = ({ onClose, onGoToFood4Though
                                 <div>
                                     <strong className="text-gray-900 block mb-1">Colors</strong>
                                     <p className="text-sm text-gray-600">Customize the default color of each block type to match your design aesthetic or brand guidelines.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="p-6 bg-gray-50 rounded-2xl border border-gray-200 shadow-sm md:col-span-2">
+                            <h4 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+                                <Leaf size={24} className="text-emerald-600" /> Material & Carbon Configuration
+                            </h4>
+                            <div className="space-y-4">
+                                <div>
+                                    <strong className="text-gray-900 block mb-1">Custom Materials & Density</strong>
+                                    <p className="text-sm text-gray-600">You can now define custom materials (like Hemp, Marble, Wood), adjusting their color, density (kg/m³), and price per kg. The system automatically recalculates the overall weight and cost of your build based on the total volume and the selected material's density.</p>
+                                </div>
+                                <div>
+                                    <strong className="text-gray-900 block mb-1">Carbon Credits</strong>
+                                    <p className="text-sm text-gray-600">Enter the Carbon Factor (Tons of CO₂ offset per Ton of material) and the current Market Price (€/ton) for Carbon Credits. The Bill of Materials (BOM) will instantly estimate the total Carbon Credit Revenue your sustainable structure generates.</p>
                                 </div>
                             </div>
                         </div>

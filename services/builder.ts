@@ -202,7 +202,7 @@ export const checkCollision = (
   // Check collision with scenario elements
   if (scenario && scenario.elements) {
       for (const el of scenario.elements) {
-          const elBox: Box3 = {
+          const elBox = {
               min: { x: el.position.x - el.dimensions.x / 2, y: el.position.y - el.dimensions.y / 2, z: el.position.z - el.dimensions.z / 2 },
               max: { x: el.position.x + el.dimensions.x / 2, y: el.position.y + el.dimensions.y / 2, z: el.position.z + el.dimensions.z / 2 }
           };
@@ -236,10 +236,12 @@ export const calculateStats = (blocks: PlacedBrock[]) => {
   let totalCost = 0;
   let totalWeight = 0;
   let totalSDG = 0;
+  let totalCO2Offset = 0;
+  let totalCarbonRevenue = 0;
   const counts: Record<string, number> = {};
   
   if (!blocks || !Array.isArray(blocks)) {
-      return { totalCost: 0, totalWeight: 0, totalSDG: 0, counts: {} };
+      return { totalCost: 0, totalWeight: 0, totalSDG: 0, totalCO2Offset: 0, totalCarbonRevenue: 0, counts: {} };
   }
 
   blocks.forEach(block => {
@@ -247,16 +249,43 @@ export const calculateStats = (blocks: PlacedBrock[]) => {
     const spec = BROCK_SPECS[block.type];
     if (!spec) return;
     
-    totalCost += spec.cost || 0;
-    totalWeight += spec.weight || 0;
+    let cost = spec.cost || 0;
+    let weight = spec.weight || 0;
+    
+    // Carbon metrics calculation
+    const c = block.color?.toUpperCase() || spec.color.toUpperCase();
+    let factor = 0;
+    let price = 0;
+    
+    const configuredMaterial = APP_CONFIG.materials?.find(m => m.color.toUpperCase() === c);
+    if (configuredMaterial) {
+        factor = configuredMaterial.carbonFactor || 0;
+        price = configuredMaterial.carbonPrice || 0;
+        
+        if (configuredMaterial.density) {
+            const corkDensity = 152.5;
+            weight = (weight / corkDensity) * configuredMaterial.density;
+        }
+        if (configuredMaterial.pricePerKg) {
+            cost = weight * configuredMaterial.pricePerKg;
+        }
+    }
+    
+    totalCost += cost;
+    totalWeight += weight;
     
     const sdgImpacts = APP_CONFIG.sdgImpacts || {};
     totalSDG += sdgImpacts[block.type] || 0;
     
     counts[spec.name] = (counts[spec.name] || 0) + 1;
+    
+    const tons = weight / 1000;
+    const co2Offset = tons * factor;
+    totalCO2Offset += co2Offset;
+    totalCarbonRevenue += co2Offset * price;
   });
   
-  return { totalCost, totalWeight, totalSDG, counts };
+  return { totalCost, totalWeight, totalSDG, totalCO2Offset, totalCarbonRevenue, counts };
 };
 
 export const calculateSelectionBounds = (blocks: PlacedBrock[], selectedIds: Set<string>) => {

@@ -13,10 +13,10 @@ CORKBRICK Play is our interactive 3D builder and physics engine. But it is more 
 We believe in **Positive Gamification**: using game mechanics not to create addiction or isolate individuals, but to empower them, foster collaboration, and solve spatial and environmental challenges.
 
 ### Our Core Pillars:
-1. **Sustainability First**: Every structure built in CORKBRICK Play calculates its real-world Sustainable Development Goal (SDG) impact. We want to show the tangible environmental benefits of choosing sustainable, modular systems over traditional, disposable furniture and construction methods.
+1. **Sustainability First**: Every structure built in CORKBRICK Play calculates its real-world Sustainable Development Goal (SDG) impact and estimated Carbon Credit revenue. We want to show the tangible environmental and economic benefits of choosing sustainable, modular systems over traditional, disposable furniture and construction methods.
 2. **Reinforcing Human Relationships**: Technology often drives people apart. We are using CORKBRICK Play to bring people together. Whether it's families co-designing their living room, or students collaborating on a school project, our platform is built for shared creativity. 
-3. **From Virtual to Physical**: What you build in the digital lab can be instantly translated into reality. By giving users the tools to simulate, measure (cost, weight, assembly time, and SDG impact), and share, we remove the friction between a great idea and a sustainable real-world solution.
-4. **Technology as a Force for Good**: We reject the use of technology for mindless consumption. Instead, we embrace tools—3D rendering, physics simulation, procedural generation, and open-source collaboration—to improve people's living environments, reduce waste, and promote eco-conscious design thinking.
+3. **From Virtual to Physical**: What you build in the digital lab can be instantly translated into reality. By giving users the tools to simulate, measure (cost, weight, assembly time, carbon offset, and SDG impact), and share, we remove the friction between a great idea and a sustainable real-world solution.
+4. **Technology as a Force for Good**: We reject the use of technology for mindless consumption. Instead, we embrace tools—3D rendering, physics simulation, procedural generation, open-source collaboration, and advanced material intelligence—to improve people's living environments, reduce waste, and promote eco-conscious design thinking.
 
 ## Calling All Visionaries
 Are you a developer, designer, or thinker passionate about:

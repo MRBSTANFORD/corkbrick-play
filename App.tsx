@@ -63,7 +63,7 @@ const BlockIcon: React.FC<{ type: BrockType; color: string; isSelected: boolean 
 };
 
 const ProjectStatsHUD: React.FC<{ 
-    stats: { totalCost: number, totalWeight: number, totalSDG: number }, 
+    stats: { totalCost: number, totalWeight: number, totalSDG: number, totalCO2Offset: number, totalCarbonRevenue: number }, 
     blockCount: number,
     selectionSize: { width: number, height: number, depth: number } | null 
 }> = ({ stats, blockCount, selectionSize }) => {
@@ -94,6 +94,10 @@ const ProjectStatsHUD: React.FC<{
                     <div className="flex justify-between items-center text-gray-600 text-xs font-medium">
                         <div className="flex items-center gap-2" title="Estimated assembly time"><Clock size={12} /> Assembly Time</div>
                         <span className="tabular-nums">{Math.ceil(blockCount / (AppConfigService.get().assemblySpeedBlocksPerMinute || 4))} m</span>
+                    </div>
+                    <div className="flex justify-between items-center text-gray-600 text-xs font-medium" title="Estimated Carbon Credit Revenue (€)">
+                        <div className="flex items-center gap-2"><Leaf size={12} className="text-emerald-500"/> Carbon Credits</div>
+                        <span className="tabular-nums text-emerald-600 font-bold">€{(stats.totalCarbonRevenue || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                     </div>
                 </div>
                 {selectionSize && (
@@ -856,7 +860,7 @@ const CorkbrickApp: React.FC<{ initialShowFood4Thought: () => void }> = ({ initi
     >
       <input type="file" ref={fileInputRef} onChange={handleLoadScene} className="hidden" accept=".json"/>
       {showHelp && <HelpModal onClose={() => setShowHelp(false)} onGoToFood4Thought={() => { setShowHelp(false); initialShowFood4Thought(); }} />}
-      {showSubmitModal && <SubmitModal onClose={() => setShowSubmitModal(false)} blocks={blocks} props={placedProps} stats={{totalBlocks: blocks.length, totalCost: stats.totalCost, totalWeight: stats.totalWeight, sdgImpact: stats.totalSDG}} />}
+      {showSubmitModal && <SubmitModal onClose={() => setShowSubmitModal(false)} blocks={blocks} props={placedProps} stats={{totalBlocks: blocks.length, totalCost: stats.totalCost, totalWeight: stats.totalWeight, sdgImpact: stats.totalSDG, totalCO2Offset: stats.totalCO2Offset, totalCarbonRevenue: stats.totalCarbonRevenue}} />}
       {showShareModal && <ShareModal imageUrl={shareScreenshotUrl} onClose={() => setShowShareModal(false)} />}
       {showChallenges && <ChallengeModal onClose={() => setShowChallenges(false)} onSelectChallenge={handleSelectChallenge} activeChallengeId={activeChallenge?.id} />}
       {activeChallenge && <ChallengeHUD challenge={activeChallenge} blocks={blocks} stats={stats} onClearChallenge={() => setActiveChallenge(null)} onShare={handleScreenshot} />}

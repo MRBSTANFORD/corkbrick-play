@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { X, RotateCcw, HelpCircle, FileText, Box, PenTool, Palette, Trash2 } from 'lucide-react';
 import { GeoConfig, GEO_META, GeoKey } from '../services/geometryConfig';
 import { AppConfigService, BROCK_SPECS } from '../constants';
-import { BrockType } from '../types';
+import { BrockType, AppConfig, MaterialDef } from '../types';
 
 interface AdminDashboardProps {
   onClose: () => void;
@@ -11,7 +11,7 @@ interface AdminDashboardProps {
 export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
   const [activeTab, setActiveTab] = useState<'GEO' | 'APP' | 'DIAGRAM' | 'STYLE'>('STYLE');
   const [geoConfig, setGeoConfig] = useState(GeoConfig.getAll() || {});
-  const [appConfig, setAppConfig] = useState(AppConfigService.get() || {});
+  const [appConfig, setAppConfig] = useState<AppConfig>(AppConfigService.get());
   const [currentSpecs, setCurrentSpecs] = useState({ ...BROCK_SPECS });
   const [selectedDiagram, setSelectedDiagram] = useState<BrockType>(BrockType.CONN_1D);
 
@@ -208,45 +208,107 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
                      <p className="text-xs text-gray-500 mb-4">Manage the materials available in the builder sidebar.</p>
                      
                      <div className="space-y-2 mb-4">
-                        {(appConfig.materials || []).map((mat: any, idx: number) => (
-                            <div key={idx} className="flex items-center gap-2 p-2 bg-gray-50 rounded border border-gray-200">
-                                <input
-                                    type="color"
-                                    value={mat.color}
-                                    onChange={(e) => {
-                                        const newMats = [...appConfig.materials];
-                                        newMats[idx] = { ...mat, color: e.target.value };
-                                        AppConfigService.setMaterials(newMats);
-                                    }}
-                                    className="w-8 h-8 rounded border-none cursor-pointer bg-transparent shrink-0"
-                                />
-                                <input
-                                    type="text"
-                                    value={mat.name}
-                                    onChange={(e) => {
-                                        const newMats = [...appConfig.materials];
-                                        newMats[idx] = { ...mat, name: e.target.value };
-                                        AppConfigService.setMaterials(newMats);
-                                    }}
-                                    className="flex-1 text-sm bg-white border border-gray-300 rounded px-2 py-1 focus:outline-none focus:border-indigo-500"
-                                />
-                                <button
-                                    onClick={() => {
-                                        const newMats = appConfig.materials.filter((_: any, i: number) => i !== idx);
-                                        AppConfigService.setMaterials(newMats);
-                                    }}
-                                    className="p-1 text-red-500 hover:bg-red-50 rounded transition-colors"
-                                    title="Remove Material"
-                                >
-                                    <Trash2 size={14} />
-                                </button>
+                        {(appConfig.materials || []).map((mat: MaterialDef, idx: number) => (
+                            <div key={idx} className="flex flex-col gap-2 p-2 bg-gray-50 rounded border border-gray-200">
+                                <div className="flex items-center gap-2">
+                                    <input
+                                        type="color"
+                                        value={mat.color}
+                                        onChange={(e) => {
+                                            const newMats = [...appConfig.materials];
+                                            newMats[idx] = { ...mat, color: e.target.value };
+                                            AppConfigService.setMaterials(newMats);
+                                        }}
+                                        className="w-8 h-8 rounded border-none cursor-pointer bg-transparent shrink-0"
+                                    />
+                                    <input
+                                        type="text"
+                                        value={mat.name}
+                                        onChange={(e) => {
+                                            const newMats = [...appConfig.materials];
+                                            newMats[idx] = { ...mat, name: e.target.value };
+                                            AppConfigService.setMaterials(newMats);
+                                        }}
+                                        className="flex-1 text-sm bg-white border border-gray-300 rounded px-2 py-1 focus:outline-none focus:border-indigo-500"
+                                        placeholder="Material Name"
+                                    />
+                                    <button
+                                        onClick={() => {
+                                            const newMats = appConfig.materials.filter((_: any, i: number) => i !== idx);
+                                            AppConfigService.setMaterials(newMats);
+                                        }}
+                                        className="p-1 text-red-500 hover:bg-red-50 rounded transition-colors"
+                                        title="Remove Material"
+                                    >
+                                        <Trash2 size={14} />
+                                    </button>
+                                </div>
+                                <div className="flex flex-wrap items-center gap-2 pl-10">
+                                    <div className="flex items-center gap-1">
+                                        <span className="text-[10px] text-gray-500 w-16">Carbon Factor:</span>
+                                        <input
+                                            type="number"
+                                            step="0.01"
+                                            value={mat.carbonFactor || 0}
+                                            onChange={(e) => {
+                                                const newMats = [...appConfig.materials];
+                                                newMats[idx] = { ...mat, carbonFactor: parseFloat(e.target.value) || 0 };
+                                                AppConfigService.setMaterials(newMats);
+                                            }}
+                                            className="w-16 text-xs bg-white border border-gray-300 rounded px-1 py-1 focus:outline-none focus:border-indigo-500 text-right"
+                                            title="Tons of CO2 per Ton of Material"
+                                        />
+                                    </div>
+                                    <div className="flex items-center gap-1">
+                                        <span className="text-[10px] text-gray-500">Market Price (€/ton):</span>
+                                        <input
+                                            type="number"
+                                            step="0.01"
+                                            value={mat.carbonPrice || 0}
+                                            onChange={(e) => {
+                                                const newMats = [...appConfig.materials];
+                                                newMats[idx] = { ...mat, carbonPrice: parseFloat(e.target.value) || 0 };
+                                                AppConfigService.setMaterials(newMats);
+                                            }}
+                                            className="w-16 text-xs bg-white border border-gray-300 rounded px-1 py-1 focus:outline-none focus:border-indigo-500 text-right"
+                                        />
+                                    </div>
+                                    <div className="flex items-center gap-1">
+                                        <span className="text-[10px] text-gray-500 w-16">Density (kg/m³):</span>
+                                        <input
+                                            type="number"
+                                            step="1"
+                                            value={mat.density || 0}
+                                            onChange={(e) => {
+                                                const newMats = [...appConfig.materials];
+                                                newMats[idx] = { ...mat, density: parseFloat(e.target.value) || 0 };
+                                                AppConfigService.setMaterials(newMats);
+                                            }}
+                                            className="w-16 text-xs bg-white border border-gray-300 rounded px-1 py-1 focus:outline-none focus:border-indigo-500 text-right"
+                                        />
+                                    </div>
+                                    <div className="flex items-center gap-1">
+                                        <span className="text-[10px] text-gray-500">Price (€/kg):</span>
+                                        <input
+                                            type="number"
+                                            step="0.01"
+                                            value={mat.pricePerKg || 0}
+                                            onChange={(e) => {
+                                                const newMats = [...appConfig.materials];
+                                                newMats[idx] = { ...mat, pricePerKg: parseFloat(e.target.value) || 0 };
+                                                AppConfigService.setMaterials(newMats);
+                                            }}
+                                            className="w-16 text-xs bg-white border border-gray-300 rounded px-1 py-1 focus:outline-none focus:border-indigo-500 text-right"
+                                        />
+                                    </div>
+                                </div>
                             </div>
                         ))}
                      </div>
                      
                      <button
                         onClick={() => {
-                            const newMats = [...(appConfig.materials || []), { name: 'New Material', color: '#cccccc' }];
+                            const newMats = [...(appConfig.materials || []), { name: 'New Material', color: '#cccccc', carbonFactor: 1.0, carbonPrice: 20.0, density: 1000, pricePerKg: 1.00 }];
                             AppConfigService.setMaterials(newMats);
                         }}
                         className="w-full py-2 border border-dashed border-indigo-300 text-indigo-600 rounded-lg text-sm font-medium hover:bg-indigo-50 transition-colors flex items-center justify-center gap-2"

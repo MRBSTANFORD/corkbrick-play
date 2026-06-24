@@ -11,6 +11,8 @@ interface SubmitModalProps {
     totalCost: number;
     totalWeight: number;
     sdgImpact: number;
+    totalCO2Offset: number;
+    totalCarbonRevenue: number;
   };
 }
 
@@ -40,7 +42,7 @@ export const SubmitModal: React.FC<SubmitModalProps> = ({ onClose, blocks, props
   const handleEmail = () => {
     const subject = encodeURIComponent(`New Design Submission: ${designName}`);
     const body = encodeURIComponent(
-      `Hello Corkbrick Team,\n\nI would like to submit my design for the Corkbrick Shop!\n\nName: ${designName}\nDescription: ${description}\n\nTotal Blocks: ${stats.totalBlocks}\nTotal Cost: €${stats.totalCost.toFixed(2)}\n\n(Please paste the copied JSON data below this line)\n--------------------------------------------------\n\n\nBest regards,`
+      `Hello Corkbrick Team,\n\nI would like to submit my design for the Corkbrick Shop!\n\nName: ${designName}\nDescription: ${description}\n\nTotal Blocks: ${stats.totalBlocks}\nTotal Cost: €${stats.totalCost.toFixed(2)}\nCarbon Revenue: €${stats.totalCarbonRevenue.toFixed(2)}\n\n(Please paste the copied JSON data below this line)\n--------------------------------------------------\n\n\nBest regards,`
     );
     window.location.href = `mailto:design@corkbrick.com?subject=${subject}&body=${body}`;
   };

@@ -110,6 +110,7 @@ const MeasureTool: React.FC<{ isActive: boolean }> = ({ isActive }) => {
 
         return (
             <group name="measure-marker">
+                {/* @ts-ignore: React SVG line vs R3F line conflict */}
                 <line raycast={() => null}>
                     <bufferGeometry>
                          <bufferAttribute 

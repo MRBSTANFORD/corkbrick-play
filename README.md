@@ -17,6 +17,7 @@ To understand the core mission behind CORKBRICK Play—including our dedication 
 
 ## 🛠 Features
 - **Intuitive 3D Builder**: Snap-to-grid placement using the 7 standard Corkbrick blocks.
+- **Material & Carbon Intelligence**: Switch between materials (Cork, Marble, Wood, Hemp) with real-time density, weight, and pricing adjustments. Estimate Carbon Credit revenues directly in the builder.
 - **Real-Time Physics & Stats**: Calculate cost, weight, assembly time, and Sustainable Development Goal (SDG) impact instantly.
 - **Challenge System**: Gamified objectives to encourage creative, sustainable problem-solving.
 - **CAD Integration**: Import and export designs (.OBJ, .GLTF, .DAE) seamlessly from software like SketchUp and AutoCAD.

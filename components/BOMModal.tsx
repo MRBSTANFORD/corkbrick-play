@@ -22,21 +22,45 @@ export const BOMModal: React.FC<BOMModalProps> = ({ blocks, onClose }) => {
       totalWeight: number; 
       unitSDG: number; 
       totalSDG: number; 
-      spec: any 
+      totalCarbon: number;
+      spec: any;
+      materialName: string;
     }> = {};
 
     let grandTotalCost = 0;
     let grandTotalWeight = 0;
     let grandTotalSDG = 0;
+    let grandTotalCarbonRevenue = 0;
 
     blocks.forEach(b => {
       const spec = BROCK_SPECS[b.type];
-      const cost = APP_CONFIG.prices[b.type];
-      const weight = APP_CONFIG.weights[b.type];
+      let cost = APP_CONFIG.prices[b.type];
+      let weight = APP_CONFIG.weights[b.type];
       const sdg = APP_CONFIG.sdgImpacts[b.type];
+      
+      const c = b.color?.toUpperCase() || spec.color.toUpperCase();
+      let factor = 0; let price = 0;
+      let matName = 'Unknown Material';
+      const configuredMaterial = APP_CONFIG.materials?.find(m => m.color.toUpperCase() === c);
+      if (configuredMaterial) {
+          factor = configuredMaterial.carbonFactor || 0;
+          price = configuredMaterial.carbonPrice || 0;
+          matName = configuredMaterial.name;
+          
+          if (configuredMaterial.density) {
+             const corkDensity = 152.5;
+             weight = (weight / corkDensity) * configuredMaterial.density;
+          }
+          if (configuredMaterial.pricePerKg) {
+             cost = weight * configuredMaterial.pricePerKg;
+          }
+      }
+      const carbon = (weight / 1000) * factor * price;
 
-      if (!groups[b.type]) {
-        groups[b.type] = {
+      const groupKey = `${b.type}-${c}`;
+
+      if (!groups[groupKey]) {
+        groups[groupKey] = {
           type: b.type,
           count: 0,
           unitPrice: cost,
@@ -45,25 +69,30 @@ export const BOMModal: React.FC<BOMModalProps> = ({ blocks, onClose }) => {
           totalWeight: 0,
           unitSDG: sdg,
           totalSDG: 0,
-          spec: spec
+          totalCarbon: 0,
+          spec: spec,
+          materialName: matName
         };
       }
 
-      groups[b.type].count++;
-      groups[b.type].totalPrice += cost;
-      groups[b.type].totalWeight += weight;
-      groups[b.type].totalSDG += sdg;
+      groups[groupKey].count++;
+      groups[groupKey].totalPrice += cost;
+      groups[groupKey].totalWeight += weight;
+      groups[groupKey].totalSDG += sdg;
+      groups[groupKey].totalCarbon += carbon;
 
       grandTotalCost += cost;
       grandTotalWeight += weight;
       grandTotalSDG += sdg;
+      grandTotalCarbonRevenue += carbon;
     });
 
     return {
       items: Object.values(groups).sort((a, b) => a.spec.name.localeCompare(b.spec.name)),
       grandTotalCost,
       grandTotalWeight,
-      grandTotalSDG
+      grandTotalSDG,
+      grandTotalCarbonRevenue
     };
   }, [blocks]);
 
@@ -130,24 +159,28 @@ export const BOMModal: React.FC<BOMModalProps> = ({ blocks, onClose }) => {
                 <thead>
                     <tr className="bg-gray-100 text-gray-600 uppercase text-xs tracking-wider">
                         <th className="p-3 font-bold rounded-l-lg">Item / Description</th>
+                        <th className="p-3 font-bold">Material</th>
                         <th className="p-3 font-bold text-center">Qty</th>
                         <th className="p-3 font-bold text-right">Unit Price</th>
                         <th className="p-3 font-bold text-right">Total Price</th>
                         <th className="p-3 font-bold text-right">Weight (kg)</th>
+                        <th className="p-3 font-bold text-right text-emerald-600">Carbon Credit</th>
                         <th className="p-3 font-bold text-right rounded-r-lg text-green-700">SDG Impact</th>
                     </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
-                    {data.items.map((item) => (
-                        <tr key={item.type} className="hover:bg-gray-50 transition-colors">
+                    {data.items.map((item, idx) => (
+                        <tr key={`${item.type}-${idx}`} className="hover:bg-gray-50 transition-colors">
                             <td className="p-3">
                                 <div className="font-bold text-gray-800">{item.spec.name}</div>
                                 <div className="text-xs text-gray-400">{item.spec.description}</div>
                             </td>
+                            <td className="p-3 text-gray-600 font-medium text-xs">{item.materialName}</td>
                             <td className="p-3 text-center font-mono">{item.count}</td>
                             <td className="p-3 text-right text-gray-600">€{item.unitPrice.toFixed(2)}</td>
                             <td className="p-3 text-right font-medium">€{item.totalPrice.toFixed(2)}</td>
                             <td className="p-3 text-right text-gray-600">{item.totalWeight.toFixed(2)}</td>
+                            <td className="p-3 text-right text-emerald-600 font-mono font-medium">€{item.totalCarbon.toFixed(2)}</td>
                             <td className="p-3 text-right font-medium text-green-700">{item.totalSDG.toFixed(2)}</td>
                         </tr>
                     ))}
@@ -169,12 +202,16 @@ export const BOMModal: React.FC<BOMModalProps> = ({ blocks, onClose }) => {
                         <span className="flex items-center gap-2"><Leaf size={14}/> Total SDG Impact</span>
                         <span className="font-mono">{data.grandTotalSDG.toFixed(2)}</span>
                     </div>
+                    <div className="flex justify-between py-2 border-b border-gray-100 text-emerald-700 font-medium">
+                        <span className="flex items-center gap-2" title="Estimated Carbon Credit Revenue (€)"><Leaf size={14}/> Carbon Credits Revenue</span>
+                        <span className="font-mono">€{data.grandTotalCarbonRevenue.toFixed(2)}</span>
+                    </div>
                     <div className="flex justify-between py-4 border-t-2 border-gray-900 text-xl font-bold text-gray-900">
                         <span className="flex items-center gap-2">Total (Excl. Tax)</span>
                         <span>€{data.grandTotalCost.toFixed(2)}</span>
                     </div>
                     <p className="text-[10px] text-gray-400 text-right mt-2">
-                        * Prices exclude VAT and shipping. SDG Impact represents the calculated sustainable development value generated by using Corkbrick system compared to traditional alternatives.
+                        * Prices exclude VAT and shipping. SDG Impact represents the calculated sustainable development value generated. Carbon Credits Revenue is an estimation based on material volume and market offsets.
                     </p>
                 </div>
             </div>
