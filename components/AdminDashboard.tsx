@@ -9,7 +9,7 @@ interface AdminDashboardProps {
 }
 
 export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
-  const [activeTab, setActiveTab] = useState<'GEO' | 'APP' | 'DIAGRAM' | 'STYLE'>('STYLE');
+  const [activeTab, setActiveTab] = useState<'GEO' | 'APP' | 'DIAGRAM' | 'MATERIALS'>('MATERIALS');
   const [geoConfig, setGeoConfig] = useState(GeoConfig.getAll() || {});
   const [appConfig, setAppConfig] = useState<AppConfig>(AppConfigService.get());
   const [currentSpecs, setCurrentSpecs] = useState({ ...BROCK_SPECS });
@@ -194,14 +194,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
          <div className="flex bg-gray-200 rounded-lg p-1 gap-1">
              <button onClick={() => setActiveTab('APP')} className={`flex-1 flex items-center justify-center gap-2 py-1.5 text-xs font-bold rounded-md transition-all ${activeTab === 'APP' ? 'bg-white text-indigo-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}><FileText size={14}/>App</button>
              <button onClick={() => setActiveTab('GEO')} className={`flex-1 flex items-center justify-center gap-2 py-1.5 text-xs font-bold rounded-md transition-all ${activeTab === 'GEO' ? 'bg-white text-indigo-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}><Box size={14}/>Phys</button>
-             <button onClick={() => setActiveTab('STYLE')} className={`flex-1 flex items-center justify-center gap-2 py-1.5 text-xs font-bold rounded-md transition-all ${activeTab === 'STYLE' ? 'bg-white text-indigo-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}><Palette size={14}/>Style</button>
+             <button onClick={() => setActiveTab('MATERIALS')} className={`flex-1 flex items-center justify-center gap-2 py-1.5 text-xs font-bold rounded-md transition-all ${activeTab === 'MATERIALS' ? 'bg-white text-indigo-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}><Palette size={14}/>Materials</button>
              <button onClick={() => setActiveTab('DIAGRAM')} className={`flex-1 flex items-center justify-center gap-2 py-1.5 text-xs font-bold rounded-md transition-all ${activeTab === 'DIAGRAM' ? 'bg-white text-indigo-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}><PenTool size={14}/>Info</button>
          </div>
       </div>
       
       <div className="flex-1 overflow-y-auto p-4 space-y-6">
 
-        {activeTab === 'STYLE' && (
+        {activeTab === 'MATERIALS' && (
              <div className="space-y-6">
                 <div>
                      <h3 className="text-xs font-bold text-indigo-600 uppercase tracking-wider border-b pb-1 mb-3">Material Library</h3>
@@ -243,63 +243,93 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
                                         <Trash2 size={14} />
                                     </button>
                                 </div>
-                                <div className="flex flex-wrap items-center gap-2 pl-10">
-                                    <div className="flex items-center gap-1">
-                                        <span className="text-[10px] text-gray-500 w-16">Carbon Factor:</span>
-                                        <input
-                                            type="number"
-                                            step="0.01"
-                                            value={mat.carbonFactor || 0}
-                                            onChange={(e) => {
-                                                const newMats = [...appConfig.materials];
-                                                newMats[idx] = { ...mat, carbonFactor: parseFloat(e.target.value) || 0 };
-                                                AppConfigService.setMaterials(newMats);
-                                            }}
-                                            className="w-16 text-xs bg-white border border-gray-300 rounded px-1 py-1 focus:outline-none focus:border-indigo-500 text-right"
-                                            title="Tons of CO2 per Ton of Material"
-                                        />
+                                <div className="flex flex-col gap-2 pl-10 mt-1">
+                                    <div className="text-[10px] font-bold text-gray-400 uppercase">Carbon Properties</div>
+                                    <div className="flex flex-wrap items-center gap-4 mb-1">
+                                        <div className="flex items-center gap-1 group relative">
+                                            <span className="text-[10px] text-gray-500 flex items-center gap-1 cursor-help border-b border-dashed border-gray-300">
+                                                Carbon Factor
+                                                <HelpCircle size={10} className="text-gray-400" />
+                                            </span>
+                                            <div className="hidden group-hover:block absolute bottom-full left-0 mb-1 w-48 p-2 bg-gray-800 text-white text-[10px] rounded shadow-lg z-10">
+                                                Tons of CO₂ offset per Ton of this material used. Determines the environmental impact.
+                                            </div>
+                                            <input
+                                                type="number"
+                                                step="0.01"
+                                                value={mat.carbonFactor || 0}
+                                                onChange={(e) => {
+                                                    const newMats = [...appConfig.materials];
+                                                    newMats[idx] = { ...mat, carbonFactor: parseFloat(e.target.value) || 0 };
+                                                    AppConfigService.setMaterials(newMats);
+                                                }}
+                                                className="w-16 text-xs bg-white border border-gray-300 rounded px-1 py-1 focus:outline-none focus:border-indigo-500 text-right ml-1"
+                                                title="Tons of CO2 per Ton of Material"
+                                            />
+                                        </div>
+                                        <div className="flex items-center gap-1 group relative">
+                                            <span className="text-[10px] text-gray-500 flex items-center gap-1 cursor-help border-b border-dashed border-gray-300">
+                                                Carbon Market Price (€/ton)
+                                                <HelpCircle size={10} className="text-gray-400" />
+                                            </span>
+                                            <div className="hidden group-hover:block absolute bottom-full left-0 mb-1 w-48 p-2 bg-gray-800 text-white text-[10px] rounded shadow-lg z-10">
+                                                The current market price for one Carbon Credit (1 Ton of CO₂). Used to calculate Carbon Credit Revenue.
+                                            </div>
+                                            <input
+                                                type="number"
+                                                step="0.01"
+                                                value={mat.carbonPrice || 0}
+                                                onChange={(e) => {
+                                                    const newMats = [...appConfig.materials];
+                                                    newMats[idx] = { ...mat, carbonPrice: parseFloat(e.target.value) || 0 };
+                                                    AppConfigService.setMaterials(newMats);
+                                                }}
+                                                className="w-16 text-xs bg-white border border-gray-300 rounded px-1 py-1 focus:outline-none focus:border-indigo-500 text-right ml-1"
+                                            />
+                                        </div>
                                     </div>
-                                    <div className="flex items-center gap-1">
-                                        <span className="text-[10px] text-gray-500">Market Price (€/ton):</span>
-                                        <input
-                                            type="number"
-                                            step="0.01"
-                                            value={mat.carbonPrice || 0}
-                                            onChange={(e) => {
-                                                const newMats = [...appConfig.materials];
-                                                newMats[idx] = { ...mat, carbonPrice: parseFloat(e.target.value) || 0 };
-                                                AppConfigService.setMaterials(newMats);
-                                            }}
-                                            className="w-16 text-xs bg-white border border-gray-300 rounded px-1 py-1 focus:outline-none focus:border-indigo-500 text-right"
-                                        />
-                                    </div>
-                                    <div className="flex items-center gap-1">
-                                        <span className="text-[10px] text-gray-500 w-16">Density (kg/m³):</span>
-                                        <input
-                                            type="number"
-                                            step="1"
-                                            value={mat.density || 0}
-                                            onChange={(e) => {
-                                                const newMats = [...appConfig.materials];
-                                                newMats[idx] = { ...mat, density: parseFloat(e.target.value) || 0 };
-                                                AppConfigService.setMaterials(newMats);
-                                            }}
-                                            className="w-16 text-xs bg-white border border-gray-300 rounded px-1 py-1 focus:outline-none focus:border-indigo-500 text-right"
-                                        />
-                                    </div>
-                                    <div className="flex items-center gap-1">
-                                        <span className="text-[10px] text-gray-500">Price (€/kg):</span>
-                                        <input
-                                            type="number"
-                                            step="0.01"
-                                            value={mat.pricePerKg || 0}
-                                            onChange={(e) => {
-                                                const newMats = [...appConfig.materials];
-                                                newMats[idx] = { ...mat, pricePerKg: parseFloat(e.target.value) || 0 };
-                                                AppConfigService.setMaterials(newMats);
-                                            }}
-                                            className="w-16 text-xs bg-white border border-gray-300 rounded px-1 py-1 focus:outline-none focus:border-indigo-500 text-right"
-                                        />
+                                    <div className="text-[10px] font-bold text-gray-400 uppercase mt-1">Physical & Cost Properties</div>
+                                    <div className="flex flex-wrap items-center gap-4">
+                                        <div className="flex items-center gap-1 group relative">
+                                            <span className="text-[10px] text-gray-500 flex items-center gap-1 cursor-help border-b border-dashed border-gray-300">
+                                                Density (kg/m³)
+                                                <HelpCircle size={10} className="text-gray-400" />
+                                            </span>
+                                            <div className="hidden group-hover:block absolute bottom-full left-0 mb-1 w-48 p-2 bg-gray-800 text-white text-[10px] rounded shadow-lg z-10">
+                                                The density of the material. Used to calculate the weight of the structure based on the volume of blocks used.
+                                            </div>
+                                            <input
+                                                type="number"
+                                                step="1"
+                                                value={mat.density || 0}
+                                                onChange={(e) => {
+                                                    const newMats = [...appConfig.materials];
+                                                    newMats[idx] = { ...mat, density: parseFloat(e.target.value) || 0 };
+                                                    AppConfigService.setMaterials(newMats);
+                                                }}
+                                                className="w-16 text-xs bg-white border border-gray-300 rounded px-1 py-1 focus:outline-none focus:border-indigo-500 text-right ml-1"
+                                            />
+                                        </div>
+                                        <div className="flex items-center gap-1 group relative">
+                                            <span className="text-[10px] text-gray-500 flex items-center gap-1 cursor-help border-b border-dashed border-gray-300">
+                                                Material Price (€/kg)
+                                                <HelpCircle size={10} className="text-gray-400" />
+                                            </span>
+                                            <div className="hidden group-hover:block absolute bottom-full right-0 mb-1 w-48 p-2 bg-gray-800 text-white text-[10px] rounded shadow-lg z-10">
+                                                The direct cost of the material itself per kilogram. Used to calculate the final physical cost of the build.
+                                            </div>
+                                            <input
+                                                type="number"
+                                                step="0.01"
+                                                value={mat.pricePerKg || 0}
+                                                onChange={(e) => {
+                                                    const newMats = [...appConfig.materials];
+                                                    newMats[idx] = { ...mat, pricePerKg: parseFloat(e.target.value) || 0 };
+                                                    AppConfigService.setMaterials(newMats);
+                                                }}
+                                                className="w-16 text-xs bg-white border border-gray-300 rounded px-1 py-1 focus:outline-none focus:border-indigo-500 text-right ml-1"
+                                            />
+                                        </div>
                                     </div>
                                 </div>
                             </div>
