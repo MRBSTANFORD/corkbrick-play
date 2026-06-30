@@ -265,12 +265,12 @@ export const FLOOR_PROPS: Record<FloorMaterial, { name: string, color: string, r
 
 const CORK_COLOR = '#C49A6C';
 export const MATERIAL_COLORS: MaterialDef[] = [
-  { name: 'Cork', color: CORK_COLOR, carbonFactor: 1.80, carbonPrice: 30.00, density: 152.5, pricePerKg: 9.43 },
-  { name: 'White Marble', color: '#F0F0F0', carbonFactor: 0.45, carbonPrice: 15.00, density: 2700, pricePerKg: 2.00 },
+  { name: 'Cork', color: CORK_COLOR, carbonFactor: 1.80, carbonFactorSource: 'https://corkbrick.com/sustainability', carbonPrice: 30.00, density: 152.5, densitySource: 'https://corkbrick.com/specifications', pricePerKg: 9.43 },
+  { name: 'White Marble', color: '#F0F0F0', carbonFactor: 0.45, carbonFactorSource: 'https://www.google.com/search?q=marble+carbon+factor', carbonPrice: 15.00, density: 2700, densitySource: 'https://www.google.com/search?q=marble+density+kg/m3', pricePerKg: 2.00 },
   { name: 'Black Marble', color: '#1A1A1A', carbonFactor: 0.45, carbonPrice: 15.00, density: 2700, pricePerKg: 2.50 },
   { name: 'Rose Marble', color: '#E8B4B8', carbonFactor: 0.45, carbonPrice: 15.00, density: 2700, pricePerKg: 2.20 },
-  { name: 'Wood', color: '#8B5A2B', carbonFactor: 1.80, carbonPrice: 20.00, density: 600, pricePerKg: 1.50 },
-  { name: 'Hemp', color: '#D2B48C', carbonFactor: 1.80, carbonPrice: 20.00, density: 300, pricePerKg: 3.00 },
+  { name: 'Wood', color: '#8B5A2B', carbonFactor: 1.80, carbonFactorSource: 'https://www.google.com/search?q=wood+carbon+factor', carbonPrice: 20.00, density: 600, densitySource: 'https://www.google.com/search?q=wood+density+kg/m3', pricePerKg: 1.50 },
+  { name: 'Hemp', color: '#D2B48C', carbonFactor: 1.80, carbonFactorSource: 'https://www.google.com/search?q=hemp+carbon+sequestration', carbonPrice: 20.00, density: 300, densitySource: 'https://www.google.com/search?q=hempcrete+density', pricePerKg: 3.00 },
 ];
 
 export const APP_CONFIG: AppConfig = {

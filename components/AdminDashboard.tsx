@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { X, RotateCcw, HelpCircle, FileText, Box, PenTool, Palette, Trash2 } from 'lucide-react';
+import { X, RotateCcw, HelpCircle, FileText, Box, PenTool, Palette, Trash2, ExternalLink } from 'lucide-react';
 import { GeoConfig, GEO_META, GeoKey } from '../services/geometryConfig';
 import { AppConfigService, BROCK_SPECS } from '../constants';
 import { BrockType, AppConfig, MaterialDef } from '../types';
@@ -266,6 +266,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
                                                 className="w-16 text-xs bg-white border border-gray-300 rounded px-1 py-1 focus:outline-none focus:border-indigo-500 text-right ml-1"
                                                 title="Tons of CO2 per Ton of Material"
                                             />
+                                            {mat.carbonFactorSource && (
+                                                <a href={mat.carbonFactorSource} target="_blank" rel="noopener noreferrer" className="ml-1 text-indigo-500 hover:text-indigo-700 flex items-center gap-0.5 text-[10px]" title="View source">
+                                                    (source <ExternalLink size={10} />)
+                                                </a>
+                                            )}
                                         </div>
                                         <div className="flex items-center gap-1 group relative">
                                             <span className="text-[10px] text-gray-500 flex items-center gap-1 cursor-help border-b border-dashed border-gray-300">
@@ -309,6 +314,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
                                                 }}
                                                 className="w-16 text-xs bg-white border border-gray-300 rounded px-1 py-1 focus:outline-none focus:border-indigo-500 text-right ml-1"
                                             />
+                                            {mat.densitySource && (
+                                                <a href={mat.densitySource} target="_blank" rel="noopener noreferrer" className="ml-1 text-indigo-500 hover:text-indigo-700 flex items-center gap-0.5 text-[10px]" title="View source">
+                                                    (source <ExternalLink size={10} />)
+                                                </a>
+                                            )}
                                         </div>
                                         <div className="flex items-center gap-1 group relative">
                                             <span className="text-[10px] text-gray-500 flex items-center gap-1 cursor-help border-b border-dashed border-gray-300">

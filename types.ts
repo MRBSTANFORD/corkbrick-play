@@ -154,8 +154,10 @@ export interface MaterialDef {
   name: string;
   color: string;
   carbonFactor: number;
+  carbonFactorSource?: string;
   carbonPrice: number;
   density: number; // kg/m3
+  densitySource?: string;
   pricePerKg: number; // €/kg
 }
 
